@@ -2,14 +2,14 @@ version: '3'
 
 services:
   database:
-    container_name: postgres
+    container_name: postgresql
     image: postgres:${POSTGRES_VERSION:-15}
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-app}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
       POSTGRES_USER: ${POSTGRES_USER:-app}
     volumes:
-      - database_data:/var/lib/postgresql/data:rw
+      - postgresql_data:/var/lib/postgresql/data:rw
   php:
     container_name: php
     build:
@@ -31,4 +31,5 @@ services:
     depends_on:
       - php
       - database
-
+volumes:
+  postgresql_data:

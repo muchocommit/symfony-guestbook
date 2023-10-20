@@ -1,11 +1,11 @@
 FROM php:8.2-fpm
-RUN apt-get update && apt-get install -y zlibd1g-dev git libicu-dev zip libzip-dev \
-    && docker-php-ext-install intl opcache pdo pdo_pgsql gd openssl sodium \
+RUN apt-get update && apt-get install -y git libicu-dev g++ zip libpcre3-dev libzip-dev libpq-dev libpng-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo pdo_pgsql pgsql intl gd openssl sodium zip\
     && pecl install redis-5.3.7 \
     && pecl install xdebug-3.2.1 \
     && pecl install amqp-2.1.1 \
     && docker-php-ext-configure zip \
-    && docker-php-ext-install zip \
     && docker-php-ext-enable redis xdebug amqp
 
 WORKDIR /var/www/symfony
