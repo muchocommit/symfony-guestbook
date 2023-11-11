@@ -14,7 +14,7 @@ class ConferenceController extends AbstractController
         return new Response(<<<EOF
             <html>
                 <body>
-                    <img src="/images/under-construction.gif" />
+                    <img src="/images/under-construction-2.gif" />
                 </body>
             </html>   
             EOF
