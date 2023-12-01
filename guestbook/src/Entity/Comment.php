@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
@@ -15,12 +16,16 @@ class Comment
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $author = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $text = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -28,7 +33,13 @@ class Comment
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Conference $conference = null;
+    private Conference $conference;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photoFilename = null;
+
+    #[ORM\Column(length: 255, options: ['default' => 'submitted'])]
+    private ?string $state = 'submitted';
 
     public function getId(): ?int
     {
@@ -40,7 +51,7 @@ class Comment
         return $this->author;
     }
 
-    public function setAuthor(string $author): static
+    public function setAuthor(string $author): self
     {
         $this->author = $author;
 
@@ -52,7 +63,7 @@ class Comment
         return $this->text;
     }
 
-    public function setText(string $text): static
+    public function setText(string $text): self
     {
         $this->text = $text;
 
@@ -64,7 +75,7 @@ class Comment
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
@@ -76,7 +87,8 @@ class Comment
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    #[ORM\PrePersist]
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -88,9 +100,33 @@ class Comment
         return $this->conference;
     }
 
-    public function setConference(?Conference $conference): static
+    public function setConference(?Conference $conference): self
     {
         $this->conference = $conference;
+
+        return $this;
+    }
+
+    public function getPhotoFilename(): ?string
+    {
+        return $this->photoFilename;
+    }
+
+    public function setPhotoFilename(?string $photoFilename): self
+    {
+        $this->photoFilename = $photoFilename;
+
+        return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(?string $state): static
+    {
+        $this->state = $state;
 
         return $this;
     }

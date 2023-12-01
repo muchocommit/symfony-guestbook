@@ -1,5 +1,9 @@
 .idea
 .DS_Store
+
+guestbook/public/uploads
+.env.local
+.env
 ###> symfony/framework-bundle ###
 guestbook/.env.local
 guestbook/.env.local.php
