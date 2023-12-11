@@ -1,7 +1,7 @@
 FROM php:8.2-fpm
 
-RUN apt-get update && apt-get install -y git libicu-dev g++ libpcre3-dev libzip-dev  \
-    libpq-dev libpng-dev librabbitmq-dev libxslt-dev nano postgresql-client graphviz \
+RUN apt update && apt install -y git libicu-dev g++ libpcre3-dev libzip-dev  \
+    libpq-dev libpng-dev librabbitmq-dev libxslt-dev nano postgresql-client graphviz nodejs npm \
     && docker-php-ext-install -j$(nproc) gd xsl opcache pdo_pgsql zip intl pcntl \
     && pecl install redis-5.3.7 xdebug-3.2.1 amqp-2.1.1 \
     && docker-php-ext-enable redis xdebug amqp pcntl
