@@ -1,8 +1,6 @@
-version: '3'
-
 services:
   database:
-    container_name: postgresql_${DIRECTORY}
+    container_name: postgresql_${PROJECT_DIR}
     image: postgres:${POSTGRES_VERSION:-15}
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -10,29 +8,37 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
     volumes:
       - postgresql_data:/var/lib/postgresql/data:rw
+    ports: ['56969:5432']
   php:
-    container_name: php_${DIRECTORY}
+    container_name: php_${PROJECT_DIR}
     build:
-      context: conf/php
+      context: volume/php
     volumes:
-      - ./${DIRECTORY}:/var/www/symfony
-    ports:
-      - ${PHP_PORTS}
+      - ./${PROJECT_DIR}:${PROJECT_ROOT}/${PROJECT_DIR}
+      - ./volume/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./volume/php/zz-fpm-user.conf:/usr/local/etc/php-fpm.d/zz-fpm-user.conf
+      - ./volume/php/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ./volume/socket:/socket
     depends_on:
       - database
   nginx:
-    container_name: nginx_${DIRECTORY}
-    image: nginx:stable
-    ports:
-      - ${NGINX_PORTS}
+    container_name: nginx_${PROJECT_DIR}
+    build:
+      context: volume/nginx
+    volumes_from:
+      - php
     volumes:
-      - ./conf/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./${DIRECTORY}/public:/var/www/symfony/public
+      - ./volume/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./volume/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./volume/nginx/templates:/etc/nginx/templates
+    environment:
+      - DOCUMENT_PATH=${DOCUMENT_PATH}
     depends_on:
       - php
+    ports: ['80:80']
+  mailer:
+    image: schickling/mailcatcher
+    ports: ['1025', '1080']
 
 volumes:
   postgresql_data:
-
-
-
