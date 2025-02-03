@@ -60,7 +60,7 @@ class Conference
         return $this->city;
     }
 
-    public function setCity(string $city): self
+    public function setCity(string $city): static
     {
         $this->city = $city;
 
@@ -72,7 +72,7 @@ class Conference
         return $this->year;
     }
 
-    public function setYear(string $year): self
+    public function setYear(string $year): static
     {
         $this->year = $year;
 
@@ -84,7 +84,7 @@ class Conference
         return $this->isInternational;
     }
 
-    public function setIsInternational(bool $isInternational): self
+    public function setIsInternational(bool $isInternational): static
     {
         $this->isInternational = $isInternational;
 
@@ -99,7 +99,7 @@ class Conference
         return $this->comments;
     }
 
-    public function addComment(Comment $comment): self
+    public function addComment(Comment $comment): static
     {
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
@@ -109,7 +109,7 @@ class Conference
         return $this;
     }
 
-    public function removeComment(Comment $comment): self
+    public function removeComment(Comment $comment): static
     {
         if ($this->comments->removeElement($comment)) {
             // set the owning side to null (unless already changed)

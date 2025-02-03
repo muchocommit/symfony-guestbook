@@ -1,6 +1,7 @@
 <?php
 namespace App\MessageHandler;
 
+use App\ImageOptimizer;
 use App\Message\CommentMessage;
 use App\Repository\CommentRepository;
 use App\SpamChecker;
@@ -24,7 +25,9 @@ class CommentMessageHandler
         private WorkflowInterface $commentStateMachine,
         private MailerInterface $mailer,
         #[Autowire('%admin_email%')] private string $adminEmail,
-        private ?LoggerInterface $logger = null,
+        private ImageOptimizer $imageOptimizer,
+        #[Autowire('%photo_dir%')] private string $photoDir,
+        private LoggerInterface $logger,
     )
     {
     }
@@ -47,7 +50,7 @@ class CommentMessageHandler
             $this->entityManager->flush();
             $this->bus->dispatch($message);
         } elseif ($this->commentStateMachine->can($comment, 'publish') || $this->commentStateMachine->can($comment, 'publish_ham')) {
-            $this->logger->debug('Second transition is triggered');
+            $this->logger->debug('Second transition is triggered, state is', ['comment' => $comment->getState()]);
 
             $this->mailer->send((new NotificationEmail())
                 ->subject('New comment posted')
@@ -56,6 +59,12 @@ class CommentMessageHandler
                 ->to($this->adminEmail)
                 ->context(['comment' => $comment])
             );
+        } elseif ($this->commentStateMachine->can($comment, 'optimize')) {
+            if ($comment->getPhotoFilename()) {
+                $this->imageOptimizer->resize($this->photoDir . '/' . $comment->getPhotoFilename());
+            }
+            $this->commentStateMachine->apply($comment, 'optimize');
+            $this->entityManager->flush();
         } elseif ($this->logger) {
             $this->logger->debug('Dropping comment message', ['comment' => $comment->getId(), 'state' => $comment->getState()]);
         }

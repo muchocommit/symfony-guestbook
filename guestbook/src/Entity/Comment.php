@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Comment
 {
     #[ORM\Id]
@@ -51,7 +52,7 @@ class Comment
         return $this->author;
     }
 
-    public function setAuthor(string $author): self
+    public function setAuthor(string $author): static
     {
         $this->author = $author;
 
@@ -63,7 +64,7 @@ class Comment
         return $this->text;
     }
 
-    public function setText(string $text): self
+    public function setText(string $text): static
     {
         $this->text = $text;
 
@@ -75,7 +76,7 @@ class Comment
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email): static
     {
         $this->email = $email;
 
@@ -88,7 +89,7 @@ class Comment
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
@@ -100,7 +101,7 @@ class Comment
         return $this->conference;
     }
 
-    public function setConference(?Conference $conference): self
+    public function setConference(?Conference $conference): static
     {
         $this->conference = $conference;
 
@@ -112,7 +113,7 @@ class Comment
         return $this->photoFilename;
     }
 
-    public function setPhotoFilename(?string $photoFilename): self
+    public function setPhotoFilename(?string $photoFilename): static
     {
         $this->photoFilename = $photoFilename;
 
