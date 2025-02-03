@@ -2,19 +2,22 @@
 
 ### Create .env file in root directory (symfony-guestbook). This file will be used for docker-compose build command. e.g.:
 <pre>
-POSTGRES_PASSWORD=app 
-POSTGRES_DB=app 
+POSTGRES_PASSWORD=app
+POSTGRES_DB=app
 POSTGRES_USER=app
-NGINX_PORTS=80:80
-DIRECTORY=guestbook
+PROJECT_ROOT=/usr/local/var/www/projects/symfony-guestbook
+PROJECT_DIR=guestbook
+DOCUMENT_PATH=/usr/local/var/www/projects/symfony-guestbook/guestbook/public
 </pre>
 ### Create .env.local file in project directory (symfony-guestbook/guestbook) e.g.: 
 <pre>
-POSTGRES_DB=app 
-POSTGRES_HOST=database 
-POSTGRES_PORT=5432 
+POSTGRES_HOST=database
+POSTGRES_DB=app
 POSTGRES_USER=app
 POSTGRES_PASSWORD=app
+POSTGRES_PORT=5432
+AKISMET_KEY=fa6b656c552d
+MAILER_DSN=smtp://mailer:1025
 </pre>
 ### Modify doctrine.yaml file for db connection with params from .env.local file:
 <pre>
