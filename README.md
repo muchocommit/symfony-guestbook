@@ -46,7 +46,7 @@ Watch for changes <br>
 
 ### Insert admin user into the database
 Run `symfony console security:hash-password`
-Insert generated hash, e.g.:
+Insert generated hash, e.g.: <br>
 `symfony console dbal:run-sql "INSERT INTO admin (id, username, roles, password) \
 VALUES (nextval('admin_id_seq'), 'admin', '[\"ROLE_ADMIN\"]', \
 '\$2y\$13\$bC3VS51h0fAuYxyKJTcaYe7YkFwhTkhF0DpOIM8m0zZU3PkzIvrDK')"`
